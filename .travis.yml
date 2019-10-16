@@ -1,11 +1,6 @@
-language: r
-cache: packages
 warnings_are_errors: false
-
-r:
-  - oldrel
-  - release
-  - devel
+language: R
+cache: packages
 
 notifications:
   email:
