@@ -1,5 +1,5 @@
 # NOAAearthquakes 
-#Mastering Software Development in R Capstone Project
+# Mastering Software Development in R Capstone Project
 
 
 This capstone project will be centered around a dataset obtained from the U.S. National Oceanographic and Atmospheric Administration (NOAA) on significant earthquakes around the world. This dataset contains information about 5,933 earthquakes over an approximately 4,000 year time span.
