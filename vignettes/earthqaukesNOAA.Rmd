@@ -9,30 +9,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The package 'earthquakeNOAA' has been built to clean and display the earthquake data from NOAA (The National Centers for Environmental
-Information). The dataset can be found here: https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1
-
-The Package is divided into 3 sections:
-
-* Cleaning the Dataset
-* Displaying the Earthquakes through the geom_timeline and geom_timeline_label functions.
-* Displaying the Earthquakes by their geographical location, through leaflet.
-
-These sections give you a comprehensive way to analyze and visualize the Earthquake data. 
-
-## Cleaning the Dataset
-
-The cleaning part of the package is composed using 2 functions:
-
-`eq_clean_data` converts time information to Date class,
-it converts the longitude and latitude information to numeric
-and it applies the `eq_location_clean` function to LOCATION_NAME field.
-
-
 ```{r eq_read_example, message = FALSE}
-filename <- system.file("NOAAearthquakes.txt", package = "earthquakesNOAA")
+library(earthquakesNOAA)
 data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
 eq_clean_data(data)
+
 
 ```
 
@@ -55,5 +36,3 @@ data %>%
   dplyr::mutate(popup_text = eq_create_label(.)) %>% 
   eq_map(annot_col = "popup_text")
 ```
-```
-
