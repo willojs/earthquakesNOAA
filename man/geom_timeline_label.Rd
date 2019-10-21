@@ -2,79 +2,82 @@
 % Please edit documentation in R/geom_timeline_label.R
 \name{geom_timeline_label}
 \alias{geom_timeline_label}
-\title{geom_timeline_label}
+\title{Timeline labels of earthquakes}
 \usage{
 geom_timeline_label(mapping = NULL, data = NULL, stat = "identity",
-  position = "identity", na.rm = FALSE, show.legend = NA,
-  inherit.aes = TRUE, ...)
+  position = "identity", ..., na.rm = FALSE, n_max = NULL,
+  show.legend = NA, inherit.aes = TRUE)
 }
 \arguments{
-\item{mapping}{Mapping argument to the ggplot layer function.}
+\item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
+\code{\link[=aes_]{aes_()}}. If specified and \code{inherit.aes = TRUE} (the
+default), it is combined with the default mapping at the top level of the
+plot. You must supply \code{mapping} if there is no plot mapping.}
 
-\item{data}{A Dataframe Object containing the data to plot.}
+\item{data}{The data to be displayed in this layer. There are three
+options:
 
-\item{stat}{Stat argument to the ggplot layer function.}
+If \code{NULL}, the default, the data is inherited from the plot
+data as specified in the call to \code{\link[=ggplot]{ggplot()}}.
 
-\item{position}{Position argument to the ggplot layer function.}
+A \code{data.frame}, or other object, will override the plot
+data. All objects will be fortified to produce a data frame. See
+\code{\link[=fortify]{fortify()}} for which variables will be created.
 
-\item{na.rm}{na.rm argument to the ggplot layer function.}
+A \code{function} will be called with a single argument,
+the plot data. The return value must be a \code{data.frame}, and
+will be used as the layer data.}
 
-\item{show.legend}{show.legend argument to the ggplot layer function.}
+\item{stat}{The statistical transformation to use on the data for this
+layer, as a string.}
 
-\item{inherit.aes}{inherit.aes argument to the ggplot layer function.}
+\item{position}{Position adjustment, either as a string, or the result of
+a call to a position adjustment function.}
 
-\item{...}{Extra Params.}
-}
-\value{
-This function adds the lineGrobs and textGrobs into the current graphics device.
+\item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
+often aesthetics, used to set an aesthetic to a fixed value, like
+\code{colour = "red"} or \code{size = 3}. They may also be parameters
+to the paired geom/stat.}
+
+\item{na.rm}{If \code{FALSE}, the default, missing values are removed with
+a warning. If \code{TRUE}, missing values are silently removed.}
+
+\item{n_max}{An integer. If used, it only plots the labels for the
+\code{n_max} largest earthquakes in the selected group in the timeline}
+
+\item{show.legend}{logical. Should this layer be included in the legends?
+\code{NA}, the default, includes if any aesthetics are mapped.
+\code{FALSE} never includes, and \code{TRUE} always includes.
+It can also be a named logical vector to finely select the aesthetics to
+display.}
+
+\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
 }
 \description{
-This layer function displays the labels of Earthquakes (coming from your \code{label}) by
-presenting each label, rotated 45 degrees, as text.
-The top \code{nmax} labels, based on the \code{size} column, will be displayed on top of a vertical line.
-This vertical line has one end located at the Earthquakes' x-coordinates (dates), and the other end under the label.
-If given a \code{y} argument, the vertical lines will be displayed in two groups at each of the y-coordinates; the
-top \code{nmax} labels will be displayed for EACH y-coordinate.
+This geom plots timeline labels of earthquakes. It assumes that
+\code{geom_timeline} was used to create the timelines
 }
-\section{Parameters to Geom}{
-
-
-\code{data}: A Dataframe Object containing the data to plot. \cr \cr
-\code{x}: Column of `data` depicting the x-coordinate of where each of the labels will be located. \cr \cr
-\code{label}: Column of `data` depicting the text labels that will be displayed. \cr \cr
-\code{size}: Column of `data` depicting size of the Earthquake, which will be used to decide the top \code{nmax} labels displayed. \cr \cr
-\code{y}: OPTIONAL. Column of `data` depicting the y-coordinate of each label displayed. \cr \cr
-\code{nmax}: OPTIONAL. Column of 'data' depicting how many top \code{size}d labels will be displayed. \cr \cr
-\code{alpha}: OPTIONAL. Alpha numeric value (0 to 1, added outside of aes) which will be used to apply the alpha to the vertical line. \cr \cr
-\code{colour}: OPTIONAL. Color 'string' (added outside of aes) to modify the default color of the lines. \cr \cr
-\code{stroke}: OPTIONAL. Stroke of the image (need not be used). \cr \cr
-
-*Note: All of the optional arguments above can be applied as columns of the dataset (inside the function aes),
-or as individual values (outside of the function aes).
+\details{
+The function plots timeline labels of earthquakes based on cleaned
+NOAA data. It should be used with combination with \code{geom_timeline}. The
+required aesthetics for this geom is \code{label} that should contain
+string for labeling each data point.
 }
-
 \examples{
-
 \dontrun{
-
-## Data Setup
-
-dataset = readr::read_delim("data/NOAAearthquakes.txt", delim = "\\t") \%>\%
-  eq_clean_data() \%>\%
-  filter(COUNTRY \%in\% c("USA", "CHINA"), YEAR > 2000)
-
-## Function Call
-
-ggplot2::ggplot(dataset, ggplot2::aes(DATE,
-                                      colour = TOTAL_DEATHS,
-                                      y = COUNTRY,
-                                      size = as.numeric(EQ_PRIMARY) )) +
-  geom_timeline() +
-  geom_timeline_label(ggplot2::aes(label = dataset$LOCATION_NAME)) +
-  ggplot2::guides(size = ggplot2::guide_legend(title = "Ritcher scale value")) +
-  ggplot2::scale_colour_continuous(name = "# of DEATHS") +
-  ggplot2::theme_classic()
-
+data \%>\% eq_clean_data() \%>\%
+   filter(COUNTRY \%in\% c("GREECE", "ITALY"), YEAR > 2000) \%>\%
+   ggplot(aes(x = DATE,
+              y = COUNTRY,
+              color = as.numeric(TOTAL_DEATHS),
+              size = as.numeric(EQ_PRIMARY)
+   )) +
+   geom_timeline() +
+   geom_timeline_label(aes(label = LOCATION_NAME), n_max = 5) +
+   theme_timeline() +
+   labs(size = "Richter scale value", color = "# deaths")
 }
-
 }

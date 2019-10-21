@@ -1,43 +1,28 @@
-#' eq_map
+#' Leaflet map of earthquakes
 #'
-#' This function takes a \code{data} argument that must include LATITUDE and LONGITUDE columns, and displays
-#' its data points in a leaflet map. The points are depicted as circles, with popup annotations being displayed
-#' upon clicking. These annotations depend on the \code{annot_col} argument.
+#' This function creates a \code{leaflet} map of selected earthquakes based on
+#' input NOAA earthquake cleaned data.
 #'
-#' @param data A Dataframe Object containing the data to plot (Must include a LATITUDE and LONGITUDE colums).
-#' @param annot_col Column of `data` depicting the markers that will be used in the map (upon clicking).
+#' @param data A data frame containing cleaned NOAA earthquake data
+#' @param annot_col A character. The name of the column in the data that should
+#' be used as descriptor.
 #'
-#' @importFrom leaflet leaflet
-#' @importFrom leaflet addTiles
-#' @importFrom leaflet addCircleMarkers
-#' @importFrom dplyr %>%
-#'
-#' @return This function adds the map as well as the datapoints, positioned at their respective Lat and Long
-#' coordinates, into the current graphics device. Furthermore, it add popup markers for each datapoint depending
-#' on the \code{annot_col} arguments.
-#'
-#' @examples
-#'
-#' \dontrun{
-#'
-#' readr::read_delim("NOAAearthquakes.txt", delim = "\t") %>%
-#'   eq_clean_data() %>%
-#'   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
-#'   eq_map(annot_col = "DATE")
-#'
-#' }
-#'
+#' @return A leaflet map with earthquakes and annotations.
 #' @export
 #'
+#' @importFrom leaflet leaflet addTiles addCircleMarkers
+#'
+#' @examples
+#' \dontrun{
+#' eq_map(data, annot_col = "LOCATION_NAME")
+#' }
+eq_map <- function(data, annot_col) {
 
-eq_map = function(data, annot_col){
-  annotation = data[[annot_col]]
-  mapping = leaflet::leaflet() %>%
+  m <- leaflet::leaflet() %>%
     leaflet::addTiles() %>%
-    leaflet::addCircleMarkers(data = data,
-                              lng = ~ LONGITUDE,
-                              lat = ~ LATITUDE,
-                              popup = ~ annotation,
-                              weight = 1)
-  return(mapping)
+    leaflet::addCircleMarkers(lng = data$LONGITUDE, lat = data$LATITUDE,
+                              radius = data$EQ_PRIMARY, weight = 1,
+                              popup = data[[annot_col]])
+
+  m
 }

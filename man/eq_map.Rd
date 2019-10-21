@@ -2,34 +2,25 @@
 % Please edit documentation in R/eq_map.R
 \name{eq_map}
 \alias{eq_map}
-\title{eq_map}
+\title{Leaflet map of earthquakes}
 \usage{
 eq_map(data, annot_col)
 }
 \arguments{
-\item{data}{A Dataframe Object containing the data to plot (Must include a LATITUDE and LONGITUDE colums).}
+\item{data}{A data frame containing cleaned NOAA earthquake data}
 
-\item{annot_col}{Column of `data` depicting the markers that will be used in the map (upon clicking).}
+\item{annot_col}{A character. The name of the column in the data that should
+be used as descriptor.}
 }
 \value{
-This function adds the map as well as the datapoints, positioned at their respective Lat and Long
-coordinates, into the current graphics device. Furthermore, it add popup markers for each datapoint depending
-on the \code{annot_col} arguments.
+A leaflet map with earthquakes and annotations.
 }
 \description{
-This function takes a \code{data} argument that must include LATITUDE and LONGITUDE columns, and displays
-its data points in a leaflet map. The points are depicted as circles, with popup annotations being displayed
-upon clicking. These annotations depend on the \code{annot_col} argument.
+This function creates a \code{leaflet} map of selected earthquakes based on
+input NOAA earthquake cleaned data.
 }
 \examples{
-
 \dontrun{
-
-readr::read_delim("data/NOAAearthquakes.txt", delim = "\\t") \%>\%
-  eq_clean_data() \%>\%
-  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
-  eq_map(annot_col = "DATE")
-
+eq_map(data, annot_col = "LOCATION_NAME")
 }
-
 }

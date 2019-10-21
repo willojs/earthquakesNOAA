@@ -2,29 +2,27 @@
 % Please edit documentation in R/eq_location_clean.R
 \name{eq_location_clean}
 \alias{eq_location_clean}
-\title{eq_location_clean}
+\title{eq_location_clean
+Parse LOCATION_NAME field of NOAA dataset}
 \usage{
 eq_location_clean(data)
 }
 \arguments{
-\item{data}{Dataset depicting the raw NOAA data frame.}
+\item{data}{A data frame with raw data obtained from NOAA website}
+
+\item{location_name}{represents the detailed information about location}
 }
 \value{
-This function returns the raw NOAA data frame with the LOCATION_NAME columns cleaned up.
-}
-\description{
-This function modifies the LOCATION_NAME column of a dataframe by separating the LOCATION_NAME
-into multiple strings (separated by the character ':'), and selecting the last one. This step
-transforms the LOCATION_NAME field from states and cities (towns) to just cities.
-It also correctly formats the LOCATION_NAME so that it only has its first letter capitalized.
-}
-\examples{
+A data frame with cleaned LOCATION_NAME column
+
+This function returns the clean version of the LOCATION_NAME
 
 \dontrun{
-
-dataset <- read_delim("data/NOAAearthquakes.txt", delim = "\\t")
-dataset <- eq_location_clean(dataset)
-
+data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
+clean_data <- eq_clean_data(data)
 }
-
+}
+\description{
+eq_location_clean
+Parse LOCATION_NAME field of NOAA dataset
 }

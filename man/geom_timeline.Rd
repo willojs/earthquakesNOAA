@@ -2,82 +2,77 @@
 % Please edit documentation in R/geom_timeline.R
 \name{geom_timeline}
 \alias{geom_timeline}
-\title{geom_timeline}
+\title{Timeline of earthquakes}
 \usage{
 geom_timeline(mapping = NULL, data = NULL, stat = "identity",
   position = "identity", na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE, ...)
 }
 \arguments{
-\item{mapping}{Mapping argument to the ggplot layer function.}
+\item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
+\code{\link[=aes_]{aes_()}}. If specified and \code{inherit.aes = TRUE} (the
+default), it is combined with the default mapping at the top level of the
+plot. You must supply \code{mapping} if there is no plot mapping.}
 
-\item{data}{A Dataframe Object containing the data to plot.}
+\item{data}{The data to be displayed in this layer. There are three
+options:
 
-\item{stat}{Stat argument to the ggplot layer function.}
+If \code{NULL}, the default, the data is inherited from the plot
+data as specified in the call to \code{\link[=ggplot]{ggplot()}}.
 
-\item{position}{Position argument to the ggplot layer function.}
+A \code{data.frame}, or other object, will override the plot
+data. All objects will be fortified to produce a data frame. See
+\code{\link[=fortify]{fortify()}} for which variables will be created.
 
-\item{na.rm}{na.rm argument to the ggplot layer function.}
+A \code{function} will be called with a single argument,
+the plot data. The return value must be a \code{data.frame}, and
+will be used as the layer data.}
 
-\item{show.legend}{show.legend argument to the ggplot layer function.}
+\item{stat}{The statistical transformation to use on the data for this
+layer, as a string.}
 
-\item{inherit.aes}{inherit.aes argument to the ggplot layer function.}
+\item{position}{Position adjustment, either as a string, or the result of
+a call to a position adjustment function.}
 
-\item{...}{Extra Params.
+\item{na.rm}{If \code{FALSE}, the default, missing values are removed with
+a warning. If \code{TRUE}, missing values are silently removed.}
 
-*Note: All of the optional arguments above can be applied as columns of the dataset (inside the function aes),
-or as individual values (outside of the function aes).}
-}
-\value{
-This function adds the lineGrobs and pointGrob into the current graphics device.
+\item{show.legend}{logical. Should this layer be included in the legends?
+\code{NA}, the default, includes if any aesthetics are mapped.
+\code{FALSE} never includes, and \code{TRUE} always includes.
+It can also be a named logical vector to finely select the aesthetics to
+display.}
+
+\item{inherit.aes}{If \code{FALSE}, overrides the default aesthetics,
+rather than combining with them. This is most useful for helper functions
+that define both data and aesthetics and shouldn't inherit behaviour from
+the default plot specification, e.g. \code{\link[=borders]{borders()}}.}
+
+\item{...}{Other arguments passed on to \code{\link[=layer]{layer()}}. These are
+often aesthetics, used to set an aesthetic to a fixed value, like
+\code{colour = "red"} or \code{size = 3}. They may also be parameters
+to the paired geom/stat.}
 }
 \description{
-This layer function displays the dates of Earthquakes (coming from your \code{data}) by
-presenting each Earthquake, on a straight line, as a point of varying sizes depending on
-their Ritcher scale value (based on the \code{size} variable). The Earthquakes are color
-coded by the death toll it caused (\code{colour}). If the \code{y} variable is supplied,
-the Earthquakes will be displayed in multiple horizontal lines, each line represnting
-the quakes for each Country.
+This geom plots a timeline of earthquakes in one line with
+options to group by country, color by number of casualties and size by scale
 }
-\section{Parameters to Geom}{
-
-
-\code{data}: A Dataframe Object containing the data to plot. \cr \cr
-\code{x}: Column of `data` depicting the x-coordinate of where each of the points will be located. \cr \cr
-\code{size}: OPTIONAL. Column of `data` depicting size of each point in the pointsGrob displayed (if
-missing, the first \code{nmax} labels will be displayed). \cr \cr
-\code{y}: OPTIONAL. Column of `data` depicting the y-coordinate of where each of the points will be located. \cr \cr
-\code{colour}: OPTIONAL. Column of `data` depicting the colour of each point in the pointGrob displayed. \cr \cr
-\code{shape}: OPTIONAL. Column of 'data' depicting the shape of each of the points. \cr \cr
-\code{alpha}: OPTIONAL. Column of `data` which will be used to apply the alpha to each point. \cr \cr
-\code{fill}: OPTIONAL. Color 'string' (added outside of aes) to modify the default fill of the points (before applying \code{colour}). \cr \cr
-\code{stroke}: OPTIONAL. Stroke of the image (need not be used). \cr \cr
-
-*Note: All of the optional arguments above can be applied as columns of the dataset (inside the function aes),
-or as individual values (outside of the function aes).
+\details{
+The function plots a timeline of earthquakes based on cleaned NOAA
+data. It requires \code{x} aesthetics. An optional \code{y} aesthetics can
+be used to group data by a selected variable (for example country).
 }
-
 \examples{
-
 \dontrun{
-
-## Data Setup
-
-dataset = readr::read_delim("data/NOAAearthquakes.txt", delim = "\\t") \%>\%
-  eq_clean_data() \%>\%
-  filter(COUNTRY \%in\% c("USA", "CHINA"), YEAR > 2000)
-
-## Function Call
-
-ggplot2::ggplot(dataset, ggplot2::aes(DATE,
-                                      colour = TOTAL_DEATHS,
-                                      y = COUNTRY,
-                                      size = as.numeric(EQ_PRIMARY) )) +
-  geom_timeline() +
-  ggplot2::guides(size = ggplot2::guide_legend(title = "Ritcher scale value")) +
-  ggplot2::scale_colour_continuous(name = "# of DEATHS") +
-  ggplot2::theme_classic()
-
+data \%>\% eq_clean_data() \%>\%
+   filter(COUNTRY \%in\% c("GREECE", "ITALY"), YEAR > 2000) \%>\%
+   ggplot(aes(x = DATE,
+              y = COUNTRY,
+              color = as.numeric(TOTAL_DEATHS),
+              size = as.numeric(EQ_PRIMARY)
+   )) +
+   geom_timeline() +
+   theme_timeline() +
+   labs(size = "Richter scale value", color = "# deaths")
 }
-
 }

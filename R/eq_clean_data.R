@@ -1,56 +1,50 @@
+#' data Earthquake NOAA Data
+#'
 #' function: eq_clean_data()
 #'
 #'
-#' This function returns the raw NOAA data frame with a new \code{DATE} column (of class date) added
-#' by combining the MONTH, YEAR, and DAY fields (MONTHS and DAYS with NA are replaced to 01).
-#' Furthermore, the rows with NA YEAR, or YEAR < 0 are removed. The LATITUDE and LONGITUDE fields
-#' are converted to numeric type, and the LOCATION_NAME fixing (from the eq_location_clean function)
-#' is implemented.
+#' \code{eq_clean_data()} that takes raw NOAA data frame and returns a clean data frame.
+#' The clean data frame should have the following:
+#' A date column created by uniting the year, month, day and converting it to the \code{Date} class.
+#' \code{LATITUDE} and \code{LONGITUDE} columns converted to numeric class.
 #'
 #'
-#' @param data Dataset depicting the raw NOAA data frame.
+#' @param raw contains the original raw dataset
 #'
-#' @importFrom dplyr filter
-#' @importFrom dplyr %>%
+#' @return This function returns the clean version of the dataset
 #'
-#' @return it returns the data frame, cleaned and with correct dates (with date class)
+#' @import dplyr
 #'
+#' @importFrom dplyr %>% mutate select
+#' @importFrom lubridate ymd
+#' @importFrom stringr str_pad
 #'
 #' @examples
 #'
 #' \dontrun{
-#'
-#' dataset <- read_delim("NOAAearthquakes.txt", delim = "\t")
-#' dataset <- eq_clean_data(dataset)
-#'
+#' data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
+#' clean_data <- eq_clean_data(data)
 #' }
-#' @export
 #'
 
-  eq_clean_data <- function(data){
+#'
+#' @export
+eq_clean_data <- function(data) {
+  data <- data %>%
+    dplyr::mutate_(
+      year_fix = ~stringr::str_pad(as.character(abs(YEAR)), width = 4,
+                                   side = "left", pad = "0"),
+      date_paste = ~paste(year_fix, MONTH, DAY, sep = "-"),
+      DATE = ~lubridate::ymd(date_paste, truncated = 2)) %>%
+    dplyr::select_(quote(-year_fix), quote(-date_paste))
 
-    ## Adding PlaceHolder Days and Months to Missing Fields
-    data[is.na(data$MONTH), "MONTH"] = 1
-    data[is.na(data$DAY), "DAY"] = 1
+  lubridate::year(data$DATE) <- data$YEAR
 
-    ## Removing Years that are negative
-    data = data %>%
-      dplyr::filter('YEAR > 0')
+  data <- data %>%
+    dplyr::mutate_(LATITUDE = ~as.numeric(LATITUDE),
+                   LONGITUDE = ~as.numeric(LONGITUDE))
 
-    ## Creating Date Columns from individual YEAR, MONTH, DAY columns
-    data$DATE = as.Date(paste(data$YEAR, data$MONTH, data$DAY, sep = "-"), format = "%Y-%m-%d")
+  data <- eq_location_clean(data)
 
-    ## Changing the LONGITUDE and LATITUDE types to numeric
-    data$LATITUDE = as.numeric(data$LATITUDE)
-    data$LONGITUDE = as.numeric(data$LONGITUDE)
-
-    # Changing Deaths to numeric (For ease of display)
-    data$DEATHS = as.numeric(data$DEATHS)
-    data$TOTAL_DEATHS = as.numeric(data$TOTAL_DEATHS)
-
-    ## Fixing Location Names
-    data <- eq_location_clean(data)
-
-    return(data)
-  }
-
+  data
+}

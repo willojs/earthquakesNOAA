@@ -24,120 +24,18 @@ These sections give you a comprehensive way to analyze and visualize the Earthqu
 
 The cleaning part of the package is composed using 2 functions:
 
-### eq_location clean
+`eq_clean_data` converts time information to Date class,
+it converts the longitude and latitude information to numeric
+and it applies the `eq_location_clean` function to LOCATION_NAME field.
 
-'eq_location_clean' takes an argument 'data', and returns that same data with its column LOCATION_NAME cleaned.
-The cleaning is done by splitting the character string by the colon ':' symbol. Then, the latest of the strings is selected (
-the rigth-most string). Finally, the strings are converted to title case, with the first letter in caps.
 
-```{r, echo = FALSE}
-if (require(earthquakesNOAA)){
-  library(earthquakesNOAA)
-}
+```{r eq_read_example, message = FALSE}
+filename <- system.file("NOAAearthquakes.txt", package = "earthquakesNOAA")
+data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
+eq_clean_data(data)
+
 ```
 
-```{r, warning=FALSE}
-## Data Setup
-test_df = data.frame(order = 1:10,
-                            LOCATION_NAME = c("Peru: Lima", "Mexico: Tijuana",
-                                              "CUBA: HABANA", "SRI LANKA: IslanD",
-                                              "EU: SPain: unknown", "US: Maine",
-                                              "US: California: Los Angeles", " Ecuador: Bogota",
-                                              "Ivory COAST: ISLAND 3", "China: HONG KONG"),
-                            stringsAsFactors = F)
-## Function Call
-test_df = eq_location_clean(test_df)
-test_df
-  
-```
-
-### eq_clean_data
-
-'eq_clean_data' takes an argument 'data', same as 'eq_location_clean', and returns a cleaned dataset with the 'eq_location_clean' applied to it. Furthermore, the LATITUDE, LONGITUDE, DEATHS, TOTAL_DEATHS columns are converted to numeric type. The data points with YEAR columns below 0 (BC years) are removed. The NA values in DAY, and MONTH columns are  converted to 1. Finally, a new DATE column is created by combining the DAY, MONTH, and YEAR columns and converting them to Date type.
-
-
-```{r}
-## Data Setup
-test_df = data.frame(LOCATION_NAME = c("Peru: Lima", "Mexico: Tijuana",
-                                              "CUBA: HABANA", "SRI LANKA: IslanD",
-                                              "EU: SPain: unknown", "US: Maine",
-                                              "US: California: Los Angeles"),
-                            YEAR = c(2150,2030,2000,1999,-1610,1566,1450),
-                            MONTH = c(NA,3,NA,1,9,6,5),
-                            DAY = c(NA,NA,1,4,NA,2,NA),
-                            LATITUDE = c(-12.5,20.2,34.1,8.567,36.5,46.975,34.262),
-                            LONGITUDE = c(-77,-103.5,-75.5,81.233,-4.4,-66.659,-118.002),
-                            DEATHS = c(NA,1,2,8,33,NA,NA),
-                            TOTAL_DEATHS = c(NA,1,NA,9,NA,25,NA),
-                            stringsAsFactors = F)
-## Function Call
-test_df = eq_clean_data(test_df) # Calling the function
-test_df
-```
-
-
-## GeomTimeline & GeomTimelineLabel
-
-The newly created geoms, Geom Timeline & Geom Timeline Label, display the earthquake data through points of varying color, size, and location (based on coordinates).
-
-### GeomTimeline
-
-'GeomTimeline' is a new Geom made of pointGrobs and lineGrobs, which display the input 'data' as points. These points vary based on the colour and size arguments. If a y-axis is given, the points will be displayed in different y-coordinates. Furthermore, a straight line is drawn from the minimum x-value to the maximum x-value. If there are y-coordinates, the line is drawn for each y. This Geom works once it is called by its  function 'geom_timeline'.
-
-### geom_timeline
-
-'geom_timeline' is the layer function for the GeomTimeline geom. To call the Geom, the 'data' argument must be supplied.
-Furthermore, the colour and size arguments will indicate the color and size of the data points. If, the y argument is supplied,
-the data points points will be grouped into n(y) groups, each displaying its own line of points.
-
-
-```{r, fig.width=7.2, fig.height=3}
-## Data Setup
-test_df = data.frame(LOCATION_NAME = c("Peru: Lima", "Mexico: Tijuana",
-                                              "CUBA: HABANA", "SRI LANKA: IslanD",
-                                              "EU: SPain: unknown", "US: Maine",
-                                              "US: California: Los Angeles"),
-                            YEAR = c(2150,2030,2000,1999,-1610,1566,1450),
-                            MONTH = c(NA,3,NA,1,9,6,5),
-                            DAY = c(NA,NA,1,4,NA,2,NA),
-                            LATITUDE = c(-12.5,20.2,34.1,8.567,36.5,46.975,34.262),
-                            LONGITUDE = c(-77,-103.5,-75.5,81.233,-4.4,-66.659,-118.002),
-                            DEATHS = c(NA,1,2,8,33,NA,NA),
-                            TOTAL_DEATHS = c(NA,1,NA,9,NA,25,NA),
-                            EQ_PRIMARY = c(4.4,6.5, 8.1, 2.7, 5.5, 6.3, 7.4),
-                            stringsAsFactors = F)
-test_df = eq_clean_data(test_df)
-## Function Call
-ggplot2::ggplot(test_df, ggplot2::aes(DATE,
-                                      colour = TOTAL_DEATHS,
-                                      size = as.numeric(EQ_PRIMARY) )) +
-  geom_timeline() +
-  ggplot2::guides(size = ggplot2::guide_legend(title = "Ritcher scale value")) +
-  ggplot2::scale_colour_continuous(name = "# of DEATHS") +
-  ggplot2::theme_classic()
-```
-
-
-### GeomTimelineLabel
-
-'GeomTimelineLabel' is a new geom made of lineGrobs and textGrobs, which label the points from the `data` argument. The location of these labels are based on the provided 'x' argument. The text used to label should be given as the `label` argument. The textGrob is positioned above the x-coordinate of the points, right above a vertical line drawn at the point. If y-coordinates are given, the vertical lines drawn will be smaller in size, depending on how many unique y-coordinates there are.
-
-### geom_timeline_label
-
-'geom_timeline_label' is the layer function to call the GeomTimelineLabel geom. This label works perfectly with the previously defined 'geom_timeline' function, and inherits its parameters as with any other ggplot. The extra argument needed is the 'label' argument. Another optional argument used is 'nmax', which describes how many top labels to use in the annotation. By 'top' label, we ferer to the data points with the higher 'nmax' values based on their `size` attribute. Note: If you need to provide a size, nmax, or other argument as a single value, rather than a column of the data, provide it outside the aes function.
-
-
-```{r, fig.width=7.2, fig.height=3}
-## Function Call
-ggplot2::ggplot(test_df, ggplot2::aes(DATE,
-                                      colour = TOTAL_DEATHS,
-                                      size = as.numeric(EQ_PRIMARY) )) +
-  geom_timeline() +
-  geom_timeline_label(ggplot2::aes(label = test_df$LOCATION_NAME)) + # Labeling
-  ggplot2::guides(size = ggplot2::guide_legend(title = "Ritcher scale value")) +
-  ggplot2::scale_colour_continuous(name = "# of DEATHS") +
-  ggplot2::theme_classic()
-```
 
 
 ## Leaflet Functions
@@ -150,35 +48,12 @@ The following 2 functions were built to display the earthquake data by their geo
 
 
 **Note: Leaflet Maps may not display in some browsers. To visualize the results of the leaflet map functions (in vignettes), download the package and knit the vignette (or preview the html file) in RStudio.**
-```{r, fig.width=7.2, fig.height=3}
-## Data Setup
-## This is test data (not actual NOAA Locations)
-test_df = data.frame(LOCATION_NAME = c("Mexico: Jalisco",
-                                              "MEXICO:  OAXACA",
-                                              "US: California: Los Angeles"),
-                            YEAR = c(2000,1610,1450),
-                            MONTH = c(3,NA,5),
-                            DAY = c(1,4,NA),
-                            LATITUDE = c(20.2,17.0,34.262),
-                            LONGITUDE = c(-103.5,-96.3,-118.002),
-                            DEATHS = c(1,2,NA),
-                            TOTAL_DEATHS = c(1,NA,25),
-                            EQ_PRIMARY = c(6.5, 2.7, 7.4),
-                            stringsAsFactors = F)
-test_df = eq_clean_data(test_df)
-## Function Call
-m = eq_clean_data(test_df)
-eq_map(m, annot_col = "DATE")
+```{r eq_map_example, fig.width = 7, fig.height = 4}
+data %>% 
+  eq_clean_data() %>% 
+  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>% 
+  dplyr::mutate(popup_text = eq_create_label(.)) %>% 
+  eq_map(annot_col = "popup_text")
+```
 ```
 
-### eq_create_label
-
-`eq_create_label` creates a new column called 'popup_text' from the LOCATION_NAME, EQ_PRIMARY, and TOTAL_DEATHS columns of the input argument `data`. The resulting column is a character vector formatted in HTML-format, where the column LOCATION_NAME is titled 'Location', the column 'EQ_PRIMARY' is titled 'Magnitude', and the column 'TOTAL_DEATHS' is titled 'Total deaths'. If any of the dataset's rows is missing either of the column values, then that particular annotation is skipped in the html string.
-
-
-```{r, fig.width=7.2, fig.height=3}
-## Function Call 
-m$popup_text = eq_create_label(m) # Creating the Labels
-## The locations and coordinates are random (not actual lat and long)
-eq_map(m, annot_col = "popup_text")
-```

@@ -2,40 +2,27 @@
 % Please edit documentation in R/eq_create_label.R
 \name{eq_create_label}
 \alias{eq_create_label}
-\title{eq_create_label}
+\title{Creates a label for leaflet map}
 \usage{
-eq_create_label(data, location = "LOCATION_NAME",
-  magnitude = "EQ_PRIMARY", total_deaths = "TOTAL_DEATHS")
+eq_create_label(data)
 }
 \arguments{
-\item{data}{A Dataframe Object containing the data to create the html annotations. Defaults to "LOCATION_NAME".}
-
-\item{location}{Name (char) of the column in \code{data} depicting the location to be annotated. Defaults to "EQ_PRIMARY".}
-
-\item{magnitude}{Name (char) of the column in \code{data} depicting the magnitude to be annotated. Defaults to "TOTAL_DEATHS".}
-
-\item{total_deaths}{Name (char) of the column in \code{data} depicting the total_deaths to be annotated}
+\item{data}{A data frame containing cleaned NOAA earthquake data}
 }
 \value{
-This function returns a character vector of HTML-formmated strings, labeling the \code{location},
-\code{magnitude}, and \code{total_deaths} values.
+A character vector with labels
 }
 \description{
-This function contructs a vector of html-formatted strings by using the input \code{data}'s
-\code{location}, \code{magnitude}, \code{total_deaths} columns. Those columns are titled
-accordingly. If, for any of the rows, one of the values is missing, that particular part
-of the annotation will be excluded.
+This function creates a label for the \code{leaflet} map based on location
+name, magnitude and casualties from NOAA earthquake data
+}
+\details{
+The input \code{data.frame} needs to include columns LOCATION_NAME,
+EQ_PRIMARY and TOTAL_DEATHS with the earthquake location, magintude and
+total casualties respectively.
 }
 \examples{
-
 \dontrun{
-
-readr::read_delim("data/NOAAearthquakes.txt", delim = "\\t") \%>\%
-  eq_clean_data() \%>\%
-  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
-  dplyr::mutate(popup_text = eq_create_label(.)) \%>\%
-  eq_map(annot_col = "popup_text")
-
+eq_create_label(data)
 }
-
 }

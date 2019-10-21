@@ -2,29 +2,31 @@
 % Please edit documentation in R/eq_clean_data.R
 \name{eq_clean_data}
 \alias{eq_clean_data}
-\title{function: eq_clean_data()}
+\title{data Earthquake NOAA Data}
 \usage{
 eq_clean_data(data)
 }
 \arguments{
-\item{data}{Dataset depicting the raw NOAA data frame.}
+\item{raw}{contains the original raw dataset}
 }
 \value{
-it returns the data frame, cleaned and with correct dates (with date class)
+This function returns the clean version of the dataset
 }
 \description{
-This function returns the raw NOAA data frame with a new \code{DATE} column (of class date) added
-by combining the MONTH, YEAR, and DAY fields (MONTHS and DAYS with NA are replaced to 01).
-Furthermore, the rows with NA YEAR, or YEAR < 0 are removed. The LATITUDE and LONGITUDE fields
-are converted to numeric type, and the LOCATION_NAME fixing (from the eq_location_clean function)
-is implemented.
+function: eq_clean_data()
+}
+\details{
+\code{eq_clean_data()} that takes raw NOAA data frame and returns a clean data frame.
+The clean data frame should have the following:
+A date column created by uniting the year, month, day and converting it to the \code{Date} class.
+\code{LATITUDE} and \code{LONGITUDE} columns converted to numeric class.
 }
 \examples{
 
 \dontrun{
-
-dataset <- read_delim("data/NOAAearthquakes.txt", delim = "\\t")
-dataset <- eq_clean_data(dataset)
-
+data <- readr::read_delim("NOAAearthquakes.txt", delim = "\\t")
+clean_data <- eq_clean_data(data)
 }
+
+
 }
