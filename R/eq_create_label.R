@@ -1,30 +1,23 @@
-#' Creates a label for leaflet map
+#' More interesting pop-ups for the interactive map used with the eq_map() function
 #'
-#' This function creates a label for the \code{leaflet} map based on location
-#' name, magnitude and casualties from NOAA earthquake data
+#' @param mapdata A cleaned data frame with data obtained from NOAA website
 #'
-#' @param data A data frame containing cleaned NOAA earthquake data
-#'
-#' @return A character vector with labels
-#'
-#' @details The input \code{data.frame} needs to include columns LOCATION_NAME,
-#' EQ_PRIMARY and TOTAL_DEATHS with the earthquake location, magintude and
-#' total casualties respectively.
-#'
-#' @export
+#' @return An HTML label that can be used as the annotation text in the leaflet map.
 #'
 #' @examples
 #' \dontrun{
-#' eq_create_label(data)
+#' readr::read_delim("earthquake.txt", delim = "\t") %>%
+#'   eq_clean_data() %>%
+#'   eq_location_clean() %>%
+#'   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
+#'   dplyr::mutate(popup_text = eq_create_label(.)) %>%
+#'   eq_map(annot_col = "popup_text")
 #' }
-eq_create_label <- function(data) {
-  popup_text <- with(data, {
-    part1 <- ifelse(is.na(LOCATION_NAME), "",
-                    paste("<strong>Location:</strong>", LOCATION_NAME))
-    part2 <- ifelse(is.na(EQ_PRIMARY), "",
-                    paste("<br><strong>Magnitude</strong>", EQ_PRIMARY))
-    part3 <- ifelse(is.na(TOTAL_DEATHS), "",
-                    paste("<br><strong>Total deaths:</strong>", TOTAL_DEATHS))
-    paste0(part1, part2, part3)
-  })
+#'
+#' @export
+
+eq_create_label <- function(mapdata){
+  paste(ifelse(is.na(mapdata$LOCATION_NAME),"", paste("<b>Location: </b>",mapdata$LOCATION_NAME,"<br/>")),
+        ifelse(is.na(mapdata$EQ_PRIMARY),"", paste("<b>Magnitude: </b>",mapdata$EQ_PRIMARY,"<br/>")),
+        ifelse(is.na(mapdata$TOTAL_DEATHS),"", paste("<b>Total deaths: </b>",mapdata$TOTAL_DEATHS,"<br/>")))
 }

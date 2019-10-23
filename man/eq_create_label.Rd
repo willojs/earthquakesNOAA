@@ -2,27 +2,27 @@
 % Please edit documentation in R/eq_create_label.R
 \name{eq_create_label}
 \alias{eq_create_label}
-\title{Creates a label for leaflet map}
+\title{More interesting pop-ups for the interactive map used with the eq_map() function}
 \usage{
-eq_create_label(data)
+eq_create_label(mapdata)
 }
 \arguments{
-\item{data}{A data frame containing cleaned NOAA earthquake data}
+\item{mapdata}{A cleaned data frame with data obtained from NOAA website}
 }
 \value{
-A character vector with labels
+An HTML label that can be used as the annotation text in the leaflet map.
 }
 \description{
-This function creates a label for the \code{leaflet} map based on location
-name, magnitude and casualties from NOAA earthquake data
-}
-\details{
-The input \code{data.frame} needs to include columns LOCATION_NAME,
-EQ_PRIMARY and TOTAL_DEATHS with the earthquake location, magintude and
-total casualties respectively.
+More interesting pop-ups for the interactive map used with the eq_map() function
 }
 \examples{
 \dontrun{
-eq_create_label(data)
+readr::read_delim("earthquake.txt", delim = "\\t") \%>\%
+  eq_clean_data() \%>\%
+  eq_location_clean() \%>\%
+  dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
+  dplyr::mutate(popup_text = eq_create_label(.)) \%>\%
+  eq_map(annot_col = "popup_text")
 }
+
 }

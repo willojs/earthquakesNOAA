@@ -2,31 +2,23 @@
 % Please edit documentation in R/eq_clean_data.R
 \name{eq_clean_data}
 \alias{eq_clean_data}
-\title{data Earthquake NOAA Data}
+\title{Clean the raw NOAA earquake data}
 \usage{
-eq_clean_data(data)
+eq_clean_data(cleandata)
 }
 \arguments{
-\item{raw}{contains the original raw dataset}
+\item{datatoclean}{A data frame with raw data obtained from NOAA website}
 }
 \value{
-This function returns the clean version of the dataset
+A data frame with cleaned date, latitude and longitude numerical columns
 }
 \description{
-function: eq_clean_data()
-}
-\details{
-\code{eq_clean_data()} that takes raw NOAA data frame and returns a clean data frame.
-The clean data frame should have the following:
-A date column created by uniting the year, month, day and converting it to the \code{Date} class.
-\code{LATITUDE} and \code{LONGITUDE} columns converted to numeric class.
+Clean the raw NOAA earquake data
 }
 \examples{
-
 \dontrun{
-data <- readr::read_delim("NOAAearthquakes.txt", delim = "\\t")
-clean_data <- eq_clean_data(data)
+data <- readr::read_delim("earthquake.txt", delim = "\\t")
+data <- eq_clean_data(data)
 }
-
 
 }

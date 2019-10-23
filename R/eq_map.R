@@ -1,28 +1,31 @@
-#' Leaflet map of earthquakes
+#' Mapping the earthquake epicenters and providing some annotations from NOAA earthquake data
 #'
-#' This function creates a \code{leaflet} map of selected earthquakes based on
-#' input NOAA earthquake cleaned data.
+#' This interactive map can show earquake information on popup
+#'  accoring to given column
 #'
-#' @param data A data frame containing cleaned NOAA earthquake data
-#' @param annot_col A character. The name of the column in the data that should
-#' be used as descriptor.
+#' @import leaflet
+#' @param dat an imput dataframe
+#' @param annot_col a string representing colume
 #'
-#' @return A leaflet map with earthquakes and annotations.
-#' @export
-#'
-#' @importFrom leaflet leaflet addTiles addCircleMarkers
+#' @return A map of the earthquakes epicenters and providing some annotations
 #'
 #' @examples
 #' \dontrun{
-#' eq_map(data, annot_col = "LOCATION_NAME")
+#' readr::read_delim("earthquake.txt", delim = "\t") %>%
+#' eq_clean_data() %>%
+#'   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%
+#'   eq_map(annot_col = "DATE")
 #' }
-eq_map <- function(data, annot_col) {
+#'
+#' @importFrom dplyr %>%
+#' @importFrom leaflet leaflet addTiles addCircleMarkers
+#'
+#' @export
 
-  m <- leaflet::leaflet() %>%
+eq_map <- function(mapdata, annot_col = "DATE") {
+  leaflet::leaflet() %>%
     leaflet::addTiles() %>%
-    leaflet::addCircleMarkers(lng = data$LONGITUDE, lat = data$LATITUDE,
-                              radius = data$EQ_PRIMARY, weight = 1,
-                              popup = data[[annot_col]])
-
-  m
+    leaflet::addCircleMarkers(lng = mapdata$LONGITUDE, lat = mapdata$LATITUDE,
+                              radius = as.numeric(mapdata$EQ_PRIMARY), popup = mapdata[[annot_col]],
+                              stroke = FALSE, fillOpacity = 0.5)
 }

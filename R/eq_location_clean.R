@@ -8,25 +8,23 @@
 #'
 #' @param location_name represents the detailed information about location
 #'
-#' @importFrom dplyr %>% mutate
-#' @importFrom stringr str_replace str_trim str_to_title
 #'
 #' @return This function returns the clean version of the LOCATION_NAME
 #'
+#' @examples
 #' \dontrun{
-#' data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
-#' clean_data <- eq_clean_data(data)
+#' library(readr)
+#' data <- readr::read_delim("earthquake.txt", delim = "\t")
+#' data <- eq_location_clean(data)
 #' }
 #'
-#' @export
+#' @importFrom dplyr %>% mutate
 #'
+#' @export
 
-eq_location_clean <- function(data) {
-  data <- data %>%
-    dplyr::mutate_(LOCATION_NAME = ~LOCATION_NAME %>%
-                     stringr::str_replace(paste0(COUNTRY, ":"), "") %>%
-                     stringr::str_trim("both") %>%
-                     stringr::str_to_title())
-  return(data)
+eq_location_clean <- function(locationtoclean) {
+  location_clean <- locationtoclean %>%
+    dplyr::mutate(LOCATION_NAME=gsub("^.*:"," ",LOCATION_NAME)) %>%
+    dplyr::mutate(LOCATION_NAME=gsub("\\b([[:alpha:]])([[:alpha:]]+)", "\\U\\1\\L\\2" ,LOCATION_NAME, perl=TRUE))
+  location_clean
 }
-

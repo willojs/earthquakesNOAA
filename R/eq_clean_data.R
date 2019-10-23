@@ -1,50 +1,36 @@
-#' data Earthquake NOAA Data
+#' Clean the raw NOAA earquake data
 #'
-#' function: eq_clean_data()
+#' @param datatoclean A data frame with raw data obtained from NOAA website
 #'
-#'
-#' \code{eq_clean_data()} that takes raw NOAA data frame and returns a clean data frame.
-#' The clean data frame should have the following:
-#' A date column created by uniting the year, month, day and converting it to the \code{Date} class.
-#' \code{LATITUDE} and \code{LONGITUDE} columns converted to numeric class.
-#'
-#'
-#' @param raw contains the original raw dataset
-#'
-#' @return This function returns the clean version of the dataset
-#'
-#' @import dplyr
-#'
-#' @importFrom dplyr %>% mutate select
-#' @importFrom lubridate ymd
-#' @importFrom stringr str_pad
+#' @return A data frame with cleaned date, latitude and longitude numerical columns
 #'
 #' @examples
-#'
 #' \dontrun{
-#' data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
-#' clean_data <- eq_clean_data(data)
+#' data <- readr::read_delim("earthquake.txt", delim = "\t")
+#' data <- eq_clean_data(data)
 #' }
 #'
-
+#' @importFrom dplyr %>% mutate select if_else
+#' @importFrom tidyr unite
+#' @importFrom lubridate year ymd
+#' @importFrom lubridate DATE
 #'
 #' @export
-eq_clean_data <- function(data) {
-  data <- data %>%
-    dplyr::mutate_(
-      year_fix = ~stringr::str_pad(as.character(abs(YEAR)), width = 4,
-                                   side = "left", pad = "0"),
-      date_paste = ~paste(year_fix, MONTH, DAY, sep = "-"),
-      DATE = ~lubridate::ymd(date_paste, truncated = 2)) %>%
-    dplyr::select_(quote(-year_fix), quote(-date_paste))
 
-  lubridate::year(data$DATE) <- data$YEAR
+eq_clean_data <- function(cleandata) {
+  clean_data <- cleandata %>%
+    dplyr::select(I_D, YEAR, MONTH, DAY, LATITUDE, LONGITUDE, LOCATION_NAME, EQ_PRIMARY, COUNTRY, STATE, TOTAL_DEATHS) %>%
+    dplyr::mutate(YEAR4=sprintf("%04d",as.numeric(gsub('-','',YEAR)))) %>%
+    dplyr::mutate(MONTH=dplyr::if_else(is.na(MONTH),'01',sprintf("%02d", MONTH))) %>%
+    dplyr::mutate(DAY=dplyr::if_else(is.na(DAY),'01',sprintf("%02d", DAY))) %>%
+    tidyr::unite(DATE,YEAR4,MONTH,DAY,sep='-',remove = FALSE) %>%
+    dplyr::mutate(DATE = lubridate::ymd(DATE)) %>%
+    dplyr::select(-YEAR4)
 
-  data <- data %>%
-    dplyr::mutate_(LATITUDE = ~as.numeric(LATITUDE),
-                   LONGITUDE = ~as.numeric(LONGITUDE))
+  lubridate::year(clean_data$DATE) <- clean_data$YEAR
 
-  data <- eq_location_clean(data)
-
-  data
+  clean_data <- clean_data %>%
+    dplyr::mutate(LATITUDE = as.numeric(LATITUDE),LONGITUDE = as.numeric(LONGITUDE),
+                  EQ_PRIMARY = as.numeric(EQ_PRIMARY), TOTAL_DEATHS = as.numeric(TOTAL_DEATHS))
+  clean_data
 }

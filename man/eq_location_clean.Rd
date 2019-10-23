@@ -5,7 +5,7 @@
 \title{eq_location_clean
 Parse LOCATION_NAME field of NOAA dataset}
 \usage{
-eq_location_clean(data)
+eq_location_clean(locationtoclean)
 }
 \arguments{
 \item{data}{A data frame with raw data obtained from NOAA website}
@@ -16,13 +16,16 @@ eq_location_clean(data)
 A data frame with cleaned LOCATION_NAME column
 
 This function returns the clean version of the LOCATION_NAME
-
-\dontrun{
-data <- readr::read_delim("NOAAearthquakes.txt", delim = "\t")
-clean_data <- eq_clean_data(data)
-}
 }
 \description{
 eq_location_clean
 Parse LOCATION_NAME field of NOAA dataset
+}
+\examples{
+\dontrun{
+library(readr)
+data <- readr::read_delim("earthquake.txt", delim = "\\t")
+data <- eq_location_clean(data)
+}
+
 }
