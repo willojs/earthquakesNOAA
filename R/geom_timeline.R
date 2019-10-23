@@ -27,7 +27,7 @@
 #' data <- readr::read_delim("earthquake.txt", delim = "\t")
 #' data <- eq_clean_data(data)
 #' data %>%
-#' dplyr::filter(COUNTRY == c("MEXICO","USA") & lubridate::year(DATE) >= 2010) %>%
+#' dplyr::filter(COUNTRY == c("MEXICO","USA") & lubridate::year(date) >= 2010) %>%
 #' ggplot(aes(x=DATE,y=COUNTRY,color=TOTAL_DEATHS,size=EQ_PRIMARY)) +
 #' geom_timeline(alpha=.5) +
 #' theme(legend.position="bottom", legend.box="horizontal", plot.title=element_text(hjust=0.5)) +
