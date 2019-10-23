@@ -14,7 +14,7 @@
 #' @importFrom tidyr unite
 #' @importFrom lubridate year ymd
 #' @importFrom lubridate DATE
-#'
+#' @import readr
 #' @export
 
 eq_clean_data <- function(cleandata) {
