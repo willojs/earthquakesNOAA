@@ -2,7 +2,7 @@
 
 # Travis Badge
  <!-- badges: start -->
-  [![Travis build status](https://travis-ci.com/willojs/earthquakesNOAA.svg?branch=master)
+  [![Travis build status](https://travis-ci.com/willojs/earthquakesNOAA.svg?branch=master)](https://travis-ci.com/willojs/earthquakesNOAA)
   <!-- badges: end -->
 
 #Introduction
