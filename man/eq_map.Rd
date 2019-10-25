@@ -20,7 +20,7 @@ This interactive map can show earquake information on popup
 }
 \examples{
 \dontrun{
-readr::read_delim("earthquake.txt", delim = "\\t") \%>\%
+readr::read_delim(("extdata","earthquake.txt", delim = "\\t") \%>\%
 eq_clean_data() \%>\%
   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) \%>\%
   eq_map(annot_col = "DATE")

@@ -2,9 +2,9 @@
 % Please edit documentation in R/eq_clean_data.R
 \name{eq_clean_data}
 \alias{eq_clean_data}
-\title{Clean the raw NOAA earquake data}
+\title{Clean the raw NOAA earthquake data}
 \usage{
-eq_clean_data(cleandata)
+eq_clean_data(clean_data)
 }
 \arguments{
 \item{datatoclean}{A data frame with raw data obtained from NOAA website}
@@ -13,11 +13,11 @@ eq_clean_data(cleandata)
 A data frame with cleaned date, latitude and longitude numerical columns
 }
 \description{
-Clean the raw NOAA earquake data
+Clean the raw NOAA earthquake data
 }
 \examples{
 \dontrun{
-data <- readr::read_delim("earthquake.txt", delim = "\\t")
+data <- readr::read_delim("extdata","earthquake.txt", delim = "\\t")
 data <- eq_clean_data(data)
 }
 

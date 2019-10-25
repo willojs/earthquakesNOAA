@@ -1,4 +1,4 @@
-filename <- system.file("earthquake.txt", package="earthquakesNOAA")
+filename <- system.file("extdata", "earthquake.txt", package="earthquakesNOAA")
 data <- readr::read_delim(filename, delim = '\t')
 clean_data <- eq_clean_data(data)
 

@@ -6,7 +6,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' readr::read_delim("earthquake.txt", delim = "\t") %>%
+#' readr::read_delim(("extdata","earthquake.txt", delim = "\t") %>%
 #'   eq_clean_data() %>%
 #'   eq_location_clean() %>%
 #'   dplyr::filter(COUNTRY == "MEXICO" & lubridate::year(DATE) >= 2000) %>%

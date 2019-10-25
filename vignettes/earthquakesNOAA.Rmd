@@ -35,7 +35,7 @@ Download the data from the NOAA website, saved it to your working directory and 
   
 Clean data
 ```{r eval = FALSE}
-filename <- system.file("earthquake.txt", package="earthquakesNOAA")
+filename <- system.file("extdata","earthquake.txt", package="earthquakesNOAA")
 library(readr)
 data <- readr::read_delim(filename, delim = "\t")
 ```
@@ -64,3 +64,26 @@ clean_data %>%
   eq_map(annot_col = "popup_text")
 ```
 
+To visualize the times, the magnitudes and the number of deaths associated to earthquakes within certain countries, use the `geom_timeline` geom with the `ggplot` function:
+
+```{r eval = FALSE}
+data %>%
+  dplyr::filter(COUNTRY == c("MEXICO","USA") & lubridate::year(DATE) >= 2010) %>%
+  ggplot(aes(x=DATE,y=COUNTRY,color=TOTAL_DEATHS,size=EQ_PRIMARY)) +
+  geom_timeline(alpha=.5) +
+  theme(legend.position="bottom", legend.box="horizontal", plot.title=element_text(hjust=0.5)) +
+  ggtitle("Earthquakes Visualization Tool") +
+  labs(size = "Richter scale value", color = "# deaths")
+```
+
+Use the `geom_timelinelabel` geom for adding annotations to the earthquake data and an option to subset the n_max largest earthquakes by magnitude:
+
+```{r eval = FALSE}
+data %>%
+  dplyr::filter(COUNTRY == c("MEXICO","USA") & lubridate::year(DATE) >= 2010) %>%
+  ggplot(aes(x=DATE,y=COUNTRY,color=TOTAL_DEATHS,size=EQ_PRIMARY)) +
+  geom_timeline(alpha=.5) +
+  geom_timelinelabel(aes(label=LOCATION_NAME),n_max=3) +
+  theme(legend.position="bottom", legend.box="horizontal", plot.title=element_text(hjust=0.5)) +
+  ggtitle("Earthquakes Visualization Tool") +
+  labs(size = "Richter scale value", color = "# deaths")

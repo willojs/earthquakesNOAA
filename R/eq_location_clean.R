@@ -1,3 +1,5 @@
+utils::globalVariables(c("LOCATION_NAME","I_D","YEAR","MONTH","DAY","LATITUDE","LONGITUDE",
+                         "EQ_PRIMARY","COUNTRY","STATE","TOTAL_DEATHS","DATE","YEAR4"))
 #' eq_location_clean
 #' Parse LOCATION_NAME field of NOAA dataset
 #'
@@ -14,7 +16,7 @@
 #' @examples
 #' \dontrun{
 #' library(readr)
-#' data <- readr::read_delim("earthquake.txt", delim = "\t")
+#' data <- readr::read_delim(("extdata","earthquake.txt", delim = "\t")
 #' data <- eq_location_clean(data)
 #' }
 #'

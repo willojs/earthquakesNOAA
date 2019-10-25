@@ -40,10 +40,10 @@ Visualize the times at which earthquakes occur within certain countries
 # The data must be cleaned using the function \\code{eq_clean_data}, included in the package.
 # Aesthetics can be specified in the \\code{ggplot} function or in \\code{geom_timeline} geom function
 \dontrun{
-data <- readr::read_delim("earthquake.txt", delim = "\\t")
+data <- readr::read_delim(("extdata","earthquake.txt", delim = "\\t")
 data <- eq_clean_data(data)
 data \%>\%
-dplyr::filter(COUNTRY == c("MEXICO","USA") & lubridate::year(DATE) >= 2010) \%>\%
+dplyr::filter(COUNTRY == c("MEXICO","USA") & lubridate::year(date) >= 2010) \%>\%
 ggplot(aes(x=DATE,y=COUNTRY,color=TOTAL_DEATHS,size=EQ_PRIMARY)) +
 geom_timeline(alpha=.5) +
 theme(legend.position="bottom", legend.box="horizontal", plot.title=element_text(hjust=0.5)) +

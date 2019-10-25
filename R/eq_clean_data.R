@@ -1,4 +1,4 @@
-#' Clean the raw NOAA earquake data
+#' Clean the raw NOAA earthquake data
 #'
 #' @param datatoclean A data frame with raw data obtained from NOAA website
 #'
@@ -6,19 +6,19 @@
 #'
 #' @examples
 #' \dontrun{
-#' data <- readr::read_delim("earthquake.txt", delim = "\t")
+#' data <- readr::read_delim("extdata","earthquake.txt", delim = "\t")
 #' data <- eq_clean_data(data)
 #' }
 #'
 #' @importFrom dplyr %>% mutate select if_else
 #' @importFrom tidyr unite
 #' @importFrom lubridate year ymd
-#' @importFrom lubridate DATE
+#' @importFrom lubridate date
 #' @import readr
 #' @export
 
-eq_clean_data <- function(cleandata) {
-  clean_data <- cleandata %>%
+eq_clean_data <- function(datatoclean) {
+  clean_data <- datatoclean %>%
     dplyr::select(I_D, YEAR, MONTH, DAY, LATITUDE, LONGITUDE, LOCATION_NAME, EQ_PRIMARY, COUNTRY, STATE, TOTAL_DEATHS) %>%
     dplyr::mutate(YEAR4=sprintf("%04d",as.numeric(gsub('-','',YEAR)))) %>%
     dplyr::mutate(MONTH=dplyr::if_else(is.na(MONTH),'01',sprintf("%02d", MONTH))) %>%

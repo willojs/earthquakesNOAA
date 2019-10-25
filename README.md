@@ -1,4 +1,4 @@
-# Mastering Software Development in R Capstone Project(NOAAearthquakes)
+# Mastering Software Development in R Capstone Project
 
 This capstone project will be centered around a dataset obtained from the U.S. National Oceanographic and Atmospheric Administration (NOAA) on significant earthquakes around the world. This dataset contains information about 5,933 earthquakes over an approximately 4,000 year time span.
 
@@ -7,3 +7,11 @@ The overall goal of the capstone project is to integrate the skills you have dev
 The ultimate goal of the capstone is to build an R package that will contain features and will satisfy a number of requirements that will be laid out in the subsequent Modules. You may want to begin organizing your package and insert various features as you go through the capstone project.
 
 Dataset: https://www.ngdc.noaa.gov/nndc/struts/form?t=101650&s=1&d=1
+
+# Review criteria
+
+1. Does the package contain help files for each function?
+2. Are there examples in the help files for each function?
+3. Does the package have a NAMESPACE file?
+4. Is every function in the package tested?
+5. Is every function in the package demonstrated in the vignette?
